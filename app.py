@@ -14,11 +14,11 @@ st.set_page_config(
 )
 
 # Professional Color Palette Definition
-WINE_COLOR = "#581845"      # Deep Burgundy / Wine
+WINE_COLOR = "#91487B"      # Deep Burgundy / Wine
 ACCENT_AMBER = "#FFC300"    # Warm Amber (for high values / warnings)
 GOOD_GREEN = "#2ECC71"      # Mint Green for high quality
 BAD_RED = "#E74C3C"         # Muted Red for low quality
-BG_LIGHT = "#F9F9FB"        # Clean off-white background
+BG_LIGHT = "#360F21"        # Clean off-white background
 
 # --- 2. LOAD PRE-TRAINED MODELS & REFERENCE DATA ---
 @st.cache_resource
@@ -157,7 +157,7 @@ with tab1:
                 score = prediction_proba[1] * 100
                 st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
                 
-                if score >= 70.0:
+                if score <=7.5 and score >=7.0:
                     st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷 GOOD QUALITY</span>", unsafe_allow_html=True)
                 else:
                     st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🤢 BAD QUALITY</span>", unsafe_allow_html=True)
@@ -177,17 +177,17 @@ with tab1:
                 value = current_val,
                 title = {'text': "Good Wine Likelihood Score (%)", 'font': {'color': WINE_COLOR, 'size': 16}},
                 gauge = {
-                    'axis': {'range': [0, 100], 'tickwidth': 1},
+                    'axis': {'range': [0, 20], 'tickwidth': 1},
                     'bar': {'color': WINE_COLOR},
                     'steps': [
-                        {'range': [0, 50], 'color': "#FDEDEC"},
-                        {'range': [50, 75], 'color': "#FEF9E7"},
-                        {'range': [75, 100], 'color': "#EAF2F8"}
+                        {'range': [0, 7.0], 'color': "#ECF40E"},
+                        {'range': [7.0, 7.5], 'color': "#11E474"},
+                        {'range': [7.5, 20], 'color': "#F52404"}
                     ],
                     'threshold': {
                         'line': {'color': GOOD_GREEN, 'width': 4},
                         'thickness': 0.75,
-                        'value': 60
+                        'value': 0
                     }
                 }
             ))
