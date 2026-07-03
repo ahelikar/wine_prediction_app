@@ -18,7 +18,7 @@ WINE_COLOR = "#581845"      # Deep Burgundy / Wine
 ACCENT_AMBER = "#FFC300"    # Warm Amber (for high values / warnings)
 GOOD_GREEN = "#2ECC71"      # Mint Green for high quality
 BAD_RED = "#E74C3C"         # Muted Red for low quality
-BG_LIGHT = "#1A1115"        # Clean off-white background
+BG_LIGHT = "#1A1115"      
 
 # --- 2. LOAD PRE-TRAINED MODELS & REFERENCE DATA ---
 @st.cache_resource
