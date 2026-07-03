@@ -165,47 +165,69 @@ with tab1:
 
         res_col1, res_col2 = st.columns(2)
         with res_col2:
-            # Gauge Visualization showing exactly where this configuration rests
-            if raw_prediction <= 10.0:
-                gauge_max = 10.0
-                gauge_steps = [
-                    {'range': [0, 7], 'color': "#FFE600"},
-                    {'range': [7, 7.2], 'color': "#00FF66"},
-                    {'range': [7.2, 10], 'color': "#FF0033"}
-                ]
-                show_ticks="outside"
-            else:
-                gauge_max = float(np.ceil(raw_prediction))
-                gauge_steps=[
-                    {'range': [0, 7], 'color': "#FFE600"},
-                    {'range': [7, 7.2], 'color': "#00FF66"},
-                    {'range': [7.2, 10], 'color': "#FF0033"}
-                ]
-                show_ticks= ""
-            fig_gauge = go.Figure(go.Indicator(
-                    mode = "gauge+number",
-                    value = float(raw_prediction), # Send the true high score to the needle
-                    title = {'text': "Wine Quality Metric Scale", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
-                    gauge = {
-                        'axis': {
-                            'range': [0, gauge_max], 
-                            'tickwidth': 2 if raw_prediction <= 10 else 0, # Hides tick bars if > 10
-                            'tickcolor': "#333333",
-                            'ticks': show_ticks # Drops or shows numeric labels dynamically
-                        },  
-                        'bar': {'color': "#111111"}, 
-                        'bgcolor': "#FFFFFF",        
-                        'steps': gauge_steps, # Uses our smart, auto-stretching colors
-                        'threshold': {
-                            'line': {'color': "#000000", 'width': 3}, 
-                            'thickness': 0.8,
-                            'value': 7.0
-                        }
-                    }
-                ))
-            fig_gauge.update_layout(margin=dict(t=30, b=10, l=10, r=10), height=220)
-            st.plotly_chart(fig_gauge, use_container_width=True)
+                # Force the prediction value to a clean float to prevent layout errors
+                score_value = float(raw_prediction)
+                
+                # Check if the score is within the normal 0-10 metric scale
+                if score_value <= 10.0:
+                    # 🟢 STANDARD SCALE MODE (0 to 10)
+                    gauge_max = 10.0
+                    gauge_steps = [
+                        {'range': [0, 7.0], 'color': "#00FF66"},   # Bright Green
+                        {'range': [7.0, 7.2], 'color': "#FFE600"}, # Bright Yellow
+                        {'range': [7.2, 10.0], 'color': "#FF0033"}  # Bright Red
+                    ]
+                    # Show standard tick marks outside the gauge wheel
+                    tick_mode = "outside" 
+                    tick_values = [0, 2, 4, 6, 7, 7.2, 8, 10]
+                    
+                else:
+                    # 🚀 UNBOUNDED PERCENTAGE MODE (Score is > 10, e.g., 50% or 100%)
+                    # Dynamically set the ceiling to 100 (or round up if it somehow exceeds 100)
+                    gauge_max = 100.0 if score_value <= 100.0 else float(np.ceil(score_value))
+                    
+                    gauge_steps = [
+                        {'range': [0, 7.0], 'color': "#00FF66"},
+                        {'range': [7.0, 7.2], 'color': "#FFE600"},
+                        # Stretch the bright red color bar all the way to the new high-score maximum!
+                        {'range': [7.2, gauge_max], 'color': "#FF0033"}
+                    ]
+                    # 🛑 REMOVE THE 0-10 TERMINATOR LINES COMPLETELY 
+                    tick_mode = "none" 
+                    tick_values = [] 
 
+                # Render the final interactive Plotly Gauge component Safely
+                try:
+                    fig_gauge = go.Figure(go.Indicator(
+                        mode = "gauge+number",
+                        value = score_value, 
+                        title = {'text': "Wine Quality Metric Scale", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
+                        gauge = {
+                            'axis': {
+                                'range': [0, gauge_max], 
+                                'tickmode': "array" if tick_mode == "outside" else "linear",
+                                'tickvals': tick_values if tick_mode == "outside" else None,
+                                'tickwidth': 2 if tick_mode == "outside" else 0, # Hides tick bars entirely when over 10
+                                'tickcolor': "#333333" if tick_mode == "outside" else "rgba(0,0,0,0)"
+                            },  
+                            'bar': {'color': "#111111"}, # Solid dark needle bar
+                            'bgcolor': "#FFFFFF",        # White back canvas makes neon colors pop
+                            'steps': gauge_steps, 
+                            'threshold': {
+                                'line': {'color': "#000000", 'width': 3}, 
+                                'thickness': 0.8,
+                                'value': 7.0 if score_value <= 10.0 else 50.0 # Moves threshold marker if percentage
+                            }
+                        }
+                    ))
+                    
+                    fig_gauge.update_layout(margin=dict(t=40, b=10, l=10, r=10), height=250, plot_bgcolor="rgba(0,0,0,0)")
+                    st.plotly_chart(fig_gauge, use_container_width=True)
+                    
+                except Exception as plotly_err:
+                    # Fallback visualization if Plotly encounters any calculation issues
+                    st.warning("Visual Gauge scale is resetting. Current output value format:")
+                    st.info(f"📊 Current Evaluated Metric Score: **{score_value:.2f}**")
 # ==========================================
 # TAB 2: DATASET INSIGHTS & ANALYTICS
 # ==========================================
