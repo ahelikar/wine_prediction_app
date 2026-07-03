@@ -145,48 +145,44 @@ with tab1:
         
         # Pull model output
         prediction = model.predict(scaled_features)[0]
-        
-        # Display nicely styled visual results block
-        res_col1, res_col2 = st.columns([1, 2])
-        
-        with res_col1:
-            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-            if hasattr(model, "predict_proba"):
-                prediction_proba = model.predict_proba(scaled_features)[0]
-                # Assuming your encoder mapped 1 -> Good, 0 -> Bad
-                score = prediction_proba[1] * 100
-                st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
-                
-                if score <= 7.5 and score >=7.0:
-                    st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷😉 GOOD CHOICE</span>", unsafe_allow_html=True)
-                else:
-                    st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🥸YOU ARE AGING MAN</span>", unsafe_allow_html=True)
+        raw_prediction = float(prediction)
+        if hasattr(model, "predict_proba"):
+            prediction_proba = model.predict_proba(scaled_features)[0]
+            # Assuming your encoder mapped 1 -> Good, 0 -> Bad
+            score = prediction_proba[1] * 100
+            st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
+
+            if 7.0 <= score <= 7.5:
+                st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷😉 GOOD CHOICE</span>", unsafe_allow_html=True)
             else:
-                # Fallback directly to binary discrete classifications if probabilities aren't supported
-                label = "🍷 GOOD QUALITY" if prediction == 1 else "🤢 BAD QUALITY"
-                color = GOOD_GREEN if prediction == 1 else  BAD_RED
-                st.markdown(f"### Assessment: <span style='color:{color}; font-weight:bold;'>{label}</span>", unsafe_allow_html=True)
-            st.markdown('</div>', unsafe_allow_html=True)
-            
+                st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🥸YOU ARE AGING MAN</span>", unsafe_allow_html=True)
+        else:
+            # Fallback directly to binary discrete classifications if probabilities aren't supported
+            label = "🍷 GOOD QUALITY" if prediction == 1 else "🤢 BAD QUALITY"
+            color = GOOD_GREEN if prediction == 1 else BAD_RED
+            st.markdown(f"### Assessment: <span style='color:{color}; font-weight:bold;'>{label}</span>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+        res_col1, res_col2 = st.columns(2)
         with res_col2:
             # Gauge Visualization showing exactly where this configuration rests
-            if raw_prediction<=10.0:
-                gauge_max=10.0
-                gauge_step=[
-                        {'range': [0, 7], 'color': "#FFE600"},
-                        {'range': [7, 7.2], 'color': "#00FF66"},
-                        {'range': [7.2, 10], 'color': "#FF0033"}
-                    ]
+            if raw_prediction <= 10.0:
+                gauge_max = 10.0
+                gauge_steps = [
+                    {'range': [0, 7], 'color': "#FFE600"},
+                    {'range': [7, 7.2], 'color': "#00FF66"},
+                    {'range': [7.2, 10], 'color': "#FF0033"}
+                ]
                 show_ticks="outside"
             else:
                 gauge_max = float(np.ceil(raw_prediction))
                 gauge_steps=[
-                {'range': [0, 7], 'color': "#FFE600"},
-                {'range': [7, 7.2], 'color': "#00FF66"},
-                {'range': [7.2, 10], 'color': "#FF0033"}
-                    ],
+                    {'range': [0, 7], 'color': "#FFE600"},
+                    {'range': [7, 7.2], 'color': "#00FF66"},
+                    {'range': [7.2, 10], 'color': "#FF0033"}
+                ]
                 show_ticks= ""
-                    fig_gauge = go.Figure(go.Indicator(
+            fig_gauge = go.Figure(go.Indicator(
                     mode = "gauge+number",
                     value = float(raw_prediction), # Send the true high score to the needle
                     title = {'text': "Wine Quality Metric Scale", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
@@ -206,9 +202,7 @@ with tab1:
                             'value': 7.0
                         }
                     }
-                
-            
-            ))
+                ))
             fig_gauge.update_layout(margin=dict(t=30, b=10, l=10, r=10), height=220)
             st.plotly_chart(fig_gauge, use_container_width=True)
 
