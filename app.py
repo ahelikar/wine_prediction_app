@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 
 # --- 1. CONFIG & SYSTEM SETTINGS ---
 st.set_page_config(
-    page_title="White Wine Quality Analytics", 
+    page_title="Red Wine Quality Analytics", 
     page_icon="🍷", 
     layout="wide",
     initial_sidebar_state="expanded"
@@ -79,7 +79,7 @@ st.markdown(f"""
             margin-bottom: 2rem;
         }}
         .metric-card {{
-            background-color: white;
+            background-color: red;
             padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
