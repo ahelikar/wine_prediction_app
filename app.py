@@ -18,7 +18,7 @@ WINE_COLOR = "#581845"      # Deep Burgundy / Wine
 ACCENT_AMBER = "#FFC300"    # Warm Amber (for high values / warnings)
 GOOD_GREEN = "#2ECC71"      # Mint Green for high quality
 BAD_RED = "#E74C3C"         # Muted Red for low quality
-BG_LIGHT = "#F9F9FB"        # Clean off-white background
+BG_LIGHT = "#FDFBF7"        # Clean off-white background
 
 # --- 2. LOAD PRE-TRAINED MODELS & REFERENCE DATA ---
 @st.cache_resource
@@ -79,7 +79,7 @@ st.markdown(f"""
             margin-bottom: 2rem;
         }}
         .metric-card {{
-            background-color: red;
+            background-color:white;
             padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
