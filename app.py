@@ -150,7 +150,7 @@ with tab1:
         res_col1, res_col2 = st.columns([1, 2])
         
         with res_col1:
-            st.markdown('<div class="metric-card">', unsafe_allowed_html=True)
+            st.markdown('<div class="metric-card">', unsafe_allow_html=True)
             if hasattr(model, "predict_proba"):
                 prediction_proba = model.predict_proba(scaled_features)[0]
                 # Assuming your encoder mapped 1 -> Good, 0 -> Bad
@@ -158,15 +158,15 @@ with tab1:
                 st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
                 
                 if score >= 60.0:
-                    st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷 GOOD QUALITY</span>", unsafe_allowed_html=True)
+                    st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷 GOOD QUALITY</span>", unsafe_allow_html=True)
                 else:
-                    st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🤢 BAD QUALITY</span>", unsafe_allowed_html=True)
+                    st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🤢 BAD QUALITY</span>", unsafe_allow_html=True)
             else:
                 # Fallback directly to binary discrete classifications if probabilities aren't supported
                 label = "🍷 GOOD QUALITY" if prediction == 1 else "🤢 BAD QUALITY"
                 color = GOOD_GREEN if prediction == 1 else  BAD_RED
-                st.markdown(f"### Assessment: <span style='color:{color}; font-weight:bold;'>{label}</span>", unsafe_allowed_html=True)
-            st.markdown('</div>', unsafe_allowed_html=True)
+                st.markdown(f"### Assessment: <span style='color:{color}; font-weight:bold;'>{label}</span>", unsafe_allow_html=True)
+            st.markdown('</div>', unsafe_allow_html=True)
             
         with res_col2:
             # Gauge Visualization showing exactly where this configuration rests
