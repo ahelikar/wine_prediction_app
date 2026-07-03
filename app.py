@@ -177,7 +177,7 @@ with tab1:
                         {'range': [7, 7.2], 'color': "#00FF66"},
                         {'range': [7.2, 10], 'color': "#FF0033"}
                     ]
-                    show_ticks="outside"
+                show_ticks="outside"
             else:
                 gauge_max = float(np.ceil(raw_prediction))
                 gauge_steps=[
