@@ -255,7 +255,7 @@ with tab2:
         st.plotly_chart(fig_scatter, use_container_width=True)
 
     # Dynamic Insight Matrix at the bottom
-    st.markdown("### 🧪 Key Chemical Insights for Technical Recruiters")
+    st.markdown("### 🧪 Key Chemical Insights")
     st.info("""
     - **Volatile Acidity:** Higher distributions typically correlate directly with poor sensory qualities (acetic acid taste profiles).
     - **Sulphates & Preservatives:** Actively bound indicators directly prevent wine oxidation, providing strong predictive patterns within the Random Forest split paths.
