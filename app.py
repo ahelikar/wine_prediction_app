@@ -165,7 +165,7 @@ with tab1:
 
         res_col1, res_col2 = st.columns(2)
         with res_col2:
-                # Force the prediction value to a clean float to prevent layout errors
+                # Convert prediction safely to a clean floating number
                 score_value = float(raw_prediction)
                 
                 # Check if the score is within the normal 0-10 metric scale
@@ -173,51 +173,49 @@ with tab1:
                     # 🟢 STANDARD SCALE MODE (0 to 10)
                     gauge_max = 10.0
                     gauge_steps = [
-                        {'range': [0, 7.0], 'color': "#00FF66"},   # Bright Green
-                        {'range': [7.0, 7.2], 'color': "#FFE600"}, # Bright Yellow
-                        {'range': [7.2, 10.0], 'color': "#FF0033"}  # Bright Red
+                        {'range': [0, 7.0], 'color': "#00FF66"},   # Bright Green (<7)
+                        {'range': [7.0, 7.2], 'color': "#FFE600"}, # Pale Yellow (7 to 7.2)
+                        {'range': [7.2, 10.0], 'color': "#FF0033"}  # Bright Red (>7.2)
                     ]
-                    # Show standard tick marks outside the gauge wheel
-                    tick_mode = "outside" 
-                    tick_values = [0, 2, 4, 6, 7, 7.2, 8, 10]
-                    
+                    # Configuration to draw standard, safe axis markers
+                    tick_config = dict(
+                        tickmode="array",
+                        tickvals=[0, 2, 4, 6, 7.0, 7.2, 8, 10],
+                        tickwidth=2,
+                        tickcolor="#333333"
+                    )
                 else:
-                    # 🚀 UNBOUNDED PERCENTAGE MODE (Score is > 10, e.g., 50% or 100%)
-                    # Dynamically set the ceiling to 100 (or round up if it somehow exceeds 100)
+                    # 🚀 UNBOUNDED PERCENTAGE MODE (Score is > 10, e.g., 11, 55, 100)
                     gauge_max = 100.0 if score_value <= 100.0 else float(np.ceil(score_value))
-                    
                     gauge_steps = [
                         {'range': [0, 7.0], 'color': "#00FF66"},
                         {'range': [7.0, 7.2], 'color': "#FFE600"},
-                        # Stretch the bright red color bar all the way to the new high-score maximum!
-                        {'range': [7.2, gauge_max], 'color': "#FF0033"}
+                        {'range': [7.2, gauge_max], 'color': "#FF0033"} # Stretch red to the peak
                     ]
-                    # 🛑 REMOVE THE 0-10 TERMINATOR LINES COMPLETELY 
-                    tick_mode = "none" 
-                    tick_values = [] 
+                    # 🛑 COMPLETELY HIDE THE 0-10 TERMINATOR MARKINGS WHEN OVER 10
+                    tick_config = dict(
+                        tickmode="linear",
+                        ticks="",
+                        showticklabels=False,
+                        tickwidth=0,
+                        tickcolor="rgba(0,0,0,0)"
+                    )
 
-                # Render the final interactive Plotly Gauge component Safely
+                # Render the final interactive Plotly Gauge component safely
                 try:
                     fig_gauge = go.Figure(go.Indicator(
-                        mode = "gauge+number",
-                        value = score_value, 
-                        title = {'text': "Wine Quality Metric Scale", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
-                        gauge = {
+                        mode="gauge+number",
+                        value=score_value, 
+                        title={'text': "Wine Quality Metric Scale", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
+                        gauge={
                             'axis': {
-                                'range': [0, gauge_max], 
-                                'tickmode': "array" if tick_mode == "outside" else "linear",
-                                'tickvals': tick_values if tick_mode == "outside" else None,
-                                'tickwidth': 2 if tick_mode == "outside" else 0, # Hides tick bars entirely when over 10
-                                'tickcolor': "#333333" if tick_mode == "outside" else "rgba(0,0,0,0)"
+                                'range': [0, gauge_max],
+                                **tick_config # Safely injects the correct scale settings
                             },  
-                            'bar': {'color': "#111111"}, # Solid dark needle bar
-                            'bgcolor': "#FFFFFF",        # White back canvas makes neon colors pop
-                            'steps': gauge_steps, 
-                            'threshold': {
-                                'line': {'color': "#000000", 'width': 3}, 
-                                'thickness': 0.8,
-                                'value': 7.0 if score_value <= 10.0 else 50.0 # Moves threshold marker if percentage
-                            }
+                            'bar': {'color': "#111111"}, # Bold dark needle
+                            'bgcolor': "#FFFFFF",        # White canvas makes bright colors pop
+                            'steps': gauge_steps
+                            # 🛡️ Threshold block removed completely to stop boundary calculation crashes
                         }
                     ))
                     
@@ -225,10 +223,9 @@ with tab1:
                     st.plotly_chart(fig_gauge, use_container_width=True)
                     
                 except Exception as plotly_err:
-                    # Fallback visualization if Plotly encounters any calculation issues
-                    st.warning("Visual Gauge scale is resetting. Current output value format:")
-                    st.info(f"📊 Current Evaluated Metric Score: **{score_value:.2f}**")
-# ==========================================
+                    # Safe layout fallback card if anything unexpected happens
+                    st.warning("Visual layout is updating...")
+                    st.info(f"📊 Evaluated Quality Value: **{score_value:.2f}**")
 # TAB 2: DATASET INSIGHTS & ANALYTICS
 # ==========================================
 with tab2:
