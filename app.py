@@ -182,10 +182,10 @@ with tab1:
                 gauge_max = float(np.ceil(raw_prediction))
                 gauge_steps=[
                 {'range': [0, 7], 'color': "#FFE600"},
-                        {'range': [7, 7.2], 'color': "#00FF66"},
-                        {'range': [7.2, 10], 'color': "#FF0033"}
+                {'range': [7, 7.2], 'color': "#00FF66"},
+                {'range': [7.2, 10], 'color': "#FF0033"}
                     ],
-                    show_ticks= ""
+                show_ticks= ""
         fig_gauge = go.Figure(go.Indicator(
                     mode = "gauge+number",
                     value = float(raw_prediction), # Send the true high score to the needle
