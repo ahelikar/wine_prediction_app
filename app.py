@@ -17,7 +17,7 @@ import streamlit as st
 
 # Define your palette variables
 PAGE_BACKGROUND = "#32061B"   # Replace with your desired background HEX code
-TEXT_COLOR = "#C758AF"        # Replace with your text color HEX code
+TEXT_COLOR = "#F1C3E7"        # Replace with your text color HEX code
 
 # Inject structural layout overrides
 st.markdown(f"""
@@ -215,7 +215,7 @@ with tab1:
                     'threshold': {
                         'line': {'color': GOOD_GREEN, 'width': 4},
                         'thickness': 0.75,
-                        'value': 0
+                        'value': 7
                     }
                 }
             ))
