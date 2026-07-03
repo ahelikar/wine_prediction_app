@@ -157,7 +157,7 @@ with tab1:
                 score = prediction_proba[1] * 100
                 st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
                 
-                if score <= 7.2 and score >=7.0:
+                if score <= 7.5 and score >=7.0:
                     st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷 GOOD QUALITY</span>", unsafe_allow_html=True)
                 else:
                     st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🤢 BAD QUALITY</span>", unsafe_allow_html=True)
