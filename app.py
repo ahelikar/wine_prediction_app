@@ -170,26 +170,44 @@ with tab1:
             
         with res_col2:
             # Gauge Visualization showing exactly where this configuration rests
-            current_val = prediction_proba[1] * 100 if hasattr(model, "predict_proba") else (100 if prediction == 1 else 20)
-            
-            fig_gauge = go.Figure(go.Indicator(
-                mode = "gauge+number",
-                value = current_val,
-                title = {'text': "Good Wine Likelihood Score (%)", 'font': {'color': WINE_COLOR, 'size': 16}},
-                gauge = {
-                    'axis': {'range': [0, 10], 'tickwidth': 1},
-                    'bar': {'color': WINE_COLOR},
-                    'steps': [
-                        {'range': [0, 7], 'color': "#FFE600"},
+            if raw_prediction<=10.0
+            gauge_max=10.0
+            gauge_step=[
+                {'range': [0, 7], 'color': "#FFE600"},
+                        {'range': [7, 7.2], 'color': "#00FF66"},
+                        {'range': [7.2, 10], 'color': "#FF0033"}
+                    ]
+                    show_ticks="outside"
+            else:
+                gauge_max = float(np.ceil(raw_prediction))
+                gauge_steps=[
+                {'range': [0, 7], 'color': "#FFE600"},
                         {'range': [7, 7.2], 'color': "#00FF66"},
                         {'range': [7.2, 10], 'color': "#FF0033"}
                     ],
-                    'threshold': {
-                        'line': {'color': GOOD_GREEN, 'width': 4},
-                        'thickness': 0.75,
-                        'value': 7.0
+                    show_ticks= ""
+        fig_gauge = go.Figure(go.Indicator(
+                    mode = "gauge+number",
+                    value = float(raw_prediction), # Send the true high score to the needle
+                    title = {'text': "Wine Quality Metric Scale", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
+                    gauge = {
+                        'axis': {
+                            'range': [0, gauge_max], 
+                            'tickwidth': 2 if raw_prediction <= 10 else 0, # Hides tick bars if > 10
+                            'tickcolor': "#333333",
+                            'ticks': show_ticks # Drops or shows numeric labels dynamically
+                        },  
+                        'bar': {'color': "#111111"}, 
+                        'bgcolor': "#FFFFFF",        
+                        'steps': gauge_steps, # Uses our smart, auto-stretching colors
+                        'threshold': {
+                            'line': {'color': "#000000", 'width': 3}, 
+                            'thickness': 0.8,
+                            'value': 7.0
+                        }
                     }
-                }
+                
+            
             ))
             fig_gauge.update_layout(margin=dict(t=30, b=10, l=10, r=10), height=220)
             st.plotly_chart(fig_gauge, use_container_width=True)
