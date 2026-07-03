@@ -167,7 +167,7 @@ with tab1:
     st.markdown("---")
     
     # Execution block triggered via button interaction
-    if st.button("🚀 Execute Pipeline Inference", type="primary"):
+    if st.button("Test Quality", type="primary"):
         # Scale inputs using the loaded scaler asset
         scaled_features = scaler.transform(input_df)
         
