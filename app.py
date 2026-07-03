@@ -10,6 +10,7 @@ st.set_page_config(
     page_title="White Wine Quality Analytics", 
     page_icon="🍷", 
     layout="wide",
+    page_color="BG_LIGHT",
     initial_sidebar_state="expanded"
 )
 
