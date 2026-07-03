@@ -86,7 +86,7 @@ st.markdown(f"""
             border-left: 5px solid {WINE_COLOR};
         }}
     </style>
-""", unsafe_allowed_html=True)
+""", unsafe_allow_html=True)
 
 st.markdown('<div class="main-header">🍷 Fine Wine App</div>', unsafe_allowed_html=True)
 st.markdown('<div class="sub-header">An interactive predictive dashboard transforming chemical profiling into instant quality classification.</div>', unsafe_allowed_html=True)
@@ -157,7 +157,7 @@ with tab1:
                 score = prediction_proba[1] * 100
                 st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
                 
-                if score >= 60.0:
+                if score >= 70.0:
                     st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷 GOOD QUALITY</span>", unsafe_allow_html=True)
                 else:
                     st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🤢 BAD QUALITY</span>", unsafe_allow_html=True)
