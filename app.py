@@ -10,15 +10,18 @@ st.set_page_config(
     page_title="White Wine Quality Analytics", 
     page_icon="🍷", 
     layout="wide",
-    page_color="BG_LIGHT",
+    
     initial_sidebar_state="expanded"
 )
+PAGE_BACKGROUND = "#430427"  
+TEXT_COLOR = "#EC87E2"        # Dark charcoal gray so text is easy to read
+CARD_BACKGROUND = "#F5C0C0"   # Pure white for containers to make metrics pop
 
 # Professional Color Palette Definition
 WINE_COLOR = "#91487B"      # Deep Burgundy / Wine
-ACCENT_AMBER = "#FFC300"    # Warm Amber (for high values / warnings)
+ACCENT_AMBER = "#EDC951"    # Warm Amber (for high values / warnings)
 GOOD_GREEN = "#2ECC71"      # Mint Green for high quality
-BAD_RED = "#E74C3C"         # Muted Red for low quality
+BAD_RED = "#FC5B49"         # Muted Red for low quality
 BG_LIGHT = "#3A081F"        
 
 # --- 2. LOAD PRE-TRAINED MODELS & REFERENCE DATA ---
@@ -75,12 +78,12 @@ st.markdown(f"""
         }}
         .sub-header {{
             font-size: 1.1rem;
-            color: #555555;
+            color: {TEXT_COLOR};
             text-align: center;
             margin-bottom: 2rem;
         }}
         .metric-card {{
-            background-color: white;
+            background-color: {CARD_BACKGROUND};
             padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
@@ -181,9 +184,9 @@ with tab1:
                     'axis': {'range': [0, 20], 'tickwidth': 1},
                     'bar': {'color': WINE_COLOR},
                     'steps': [
-                        {'range': [0, 7.0], 'color': "#E5E973"},
-                        {'range': [7.0, 7.5], 'color': "#53C588"},
-                        {'range': [7.5, 20], 'color': "#D04C37"}
+                        {'range': [0, 7.0], 'color': "ACCENT_AMBER"},
+                        {'range': [7.0, 7.5], 'color': "GOOD_GREEN"},
+                        {'range': [7.5, 20], 'color': "BAD_RED"}
                     ],
                     'threshold': {
                         'line': {'color': GOOD_GREEN, 'width': 4},
