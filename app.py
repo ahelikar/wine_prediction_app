@@ -149,8 +149,11 @@ with tab1:
         if hasattr(model, "predict_proba"):
             prediction_proba = model.predict_proba(scaled_features)[0]
             # Assuming your encoder mapped 1 -> Good, 0 -> Bad
-            score = prediction_proba[1] * 100
-            st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
+            probability = prediction_proba[1]
+            percentage_score = probability * 100
+            score = probability * 10
+            current_val = score
+            st.metric(label="Model Quality Probability", value=f"{percentage_score:.1f}%")
 
             if 7.0 <= score <= 7.5:
                 st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷😉 GOOD CHOICE</span>", unsafe_allow_html=True)
@@ -160,72 +163,40 @@ with tab1:
             # Fallback directly to binary discrete classifications if probabilities aren't supported
             label = "🍷 GOOD QUALITY" if prediction == 1 else "🤢 BAD QUALITY"
             color = GOOD_GREEN if prediction == 1 else BAD_RED
+            current_val = 10.0 if prediction == 1 else 0.0
             st.markdown(f"### Assessment: <span style='color:{color}; font-weight:bold;'>{label}</span>", unsafe_allow_html=True)
         st.markdown('</div>', unsafe_allow_html=True)
 
         res_col1, res_col2 = st.columns(2)
         with res_col2:
-                # Convert prediction safely to a clean floating number
-                score_value = float(raw_prediction)
-                
-                # Check if the score is within the normal 0-10 metric scale
-                if score_value <= 10.0:
-                    # 🟢 STANDARD SCALE MODE (0 to 10)
-                    gauge_max = 10.0
-                    gauge_steps = [
-                        {'range': [0, 7.0], 'color': "#00FF66"},   # Bright Green (<7)
-                        {'range': [7.0, 7.2], 'color': "#FFE600"}, # Pale Yellow (7 to 7.2)
-                        {'range': [7.2, 10.0], 'color': "#FF0033"}  # Bright Red (>7.2)
-                    ]
-                    # Configuration to draw standard, safe axis markers
-                    tick_config = dict(
-                        tickmode="array",
-                        tickvals=[0, 2, 4, 6, 7.0, 7.2, 8, 10],
-                        tickwidth=2,
-                        tickcolor="#333333"
-                    )
-                else:
-                    # 🚀 UNBOUNDED PERCENTAGE MODE (Score is > 10, e.g., 11, 55, 100)
-                    gauge_max = 100.0 if score_value <= 100.0 else float(np.ceil(score_value))
-                    gauge_steps = [
-                        {'range': [0, 7.0], 'color': "#00FF66"},
-                        {'range': [7.0, 7.2], 'color': "#FFE600"},
-                        {'range': [7.2, gauge_max], 'color': "#FF0033"} # Stretch red to the peak
-                    ]
-                    # 🛑 COMPLETELY HIDE THE 0-10 TERMINATOR MARKINGS WHEN OVER 10
-                    tick_config = dict(
-                        tickmode="linear",
-                        ticks="",
-                        showticklabels=False,
-                        tickwidth=0,
-                        tickcolor="rgba(0,0,0,0)"
-                    )
-
-                # Render the final interactive Plotly Gauge component safely
-                try:
-                    fig_gauge = go.Figure(go.Indicator(
-                        mode="gauge+number",
-                        value=score_value, 
-                        title={'text': "Wine Quality Metric Scale", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
-                        gauge={
-                            'axis': {
-                                'range': [0, gauge_max],
-                                **tick_config # Safely injects the correct scale settings
-                            },  
-                            'bar': {'color': "#111111"}, # Bold dark needle
-                            'bgcolor': "#FFFFFF",        # White canvas makes bright colors pop
-                            'steps': gauge_steps
-                            # 🛡️ Threshold block removed completely to stop boundary calculation crashes
+            try:
+                fig_gauge = go.Figure(go.Indicator(
+                    mode = "gauge+number",
+                    value = current_val,
+                    title = {'text': "Good Wine Likelihood Score (%)", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
+                    gauge = {
+                        'axis': {'range': [0, 10], 'tickwidth': 2, 'tickcolor': "#333333"},
+                        'bar': {'color': "#111111"}, # Solid dark needle for sharp contrast
+                        'bgcolor': "#FFFFFF",        # Pure white background to make bright colors pop
+                        'steps': [
+                            {'range': [0, 5.0], 'color': "#9C8818"},
+                            {'range': [7.0, 7.2], 'color': "#00FF66"},
+                            {'range': [7.2, 10], 'color': "#D72044"}
+                        ],
+                        'threshold': {
+                            'line': {'color': "#000000", 'width': 3}, # Dark line to sharply frame the threshold boundary
+                            'thickness': 0.8,
+                            'value': 7.0
                         }
-                    ))
-                    
-                    fig_gauge.update_layout(margin=dict(t=40, b=10, l=10, r=10), height=250, plot_bgcolor="rgba(0,0,0,0)")
-                    st.plotly_chart(fig_gauge, use_container_width=True)
-                    
-                except Exception as plotly_err:
-                    # Safe layout fallback card if anything unexpected happens
-                    st.warning("Visual layout is updating...")
-                    st.info(f"📊 Evaluated Quality Value: **{score_value:.2f}**")
+                    }
+                ))
+                # Increase chart height slightly to give the bright colors more visual weight
+                fig_gauge.update_layout(margin=dict(t=30, b=10, l=10, r=10), height=250)
+                st.plotly_chart(fig_gauge, use_container_width=True)
+            except Exception as plotly_err:
+                # Safe layout fallback card if anything unexpected happens
+                st.warning("Visual layout is updating...")
+                st.info(f"📊 Evaluated Quality Value: **{current_val:.2f}**")
 # TAB 2: DATASET INSIGHTS & ANALYTICS
 # ==========================================
 with tab2:
