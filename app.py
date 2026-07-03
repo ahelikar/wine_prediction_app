@@ -88,7 +88,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-header">🍷 White Wine Quality Portfolio App</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🍷Fine Wine</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">An interactive predictive dashboard transforming chemical profiling into instant quality classification.</div>', unsafe_allow_html=True)
 
 # --- 4. NAVIGATION TABS ---
@@ -158,9 +158,9 @@ with tab1:
                 st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
                 
                 if score <= 7.5 and score >=7.0:
-                    st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷 GOOD QUALITY</span>", unsafe_allow_html=True)
+                    st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷😉 GOOD CHOICE</span>", unsafe_allow_html=True)
                 else:
-                    st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🤢 BAD QUALITY</span>", unsafe_allow_html=True)
+                    st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🥸YOU ARE AGING MAN</span>", unsafe_allow_html=True)
             else:
                 # Fallback directly to binary discrete classifications if probabilities aren't supported
                 label = "🍷 GOOD QUALITY" if prediction == 1 else "🤢 BAD QUALITY"
