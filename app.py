@@ -24,7 +24,7 @@ BG_LIGHT = "#F9F9FB"        # Clean off-white background
 @st.cache_resource
 def load_ml_components():
     # Replace these filenames with your exact exported assets
-    model = joblib.load('wine_classifier.pkl')
+    model = joblib.load('wine_quality.pkl')
     scaler = joblib.load('scaler.pkl')
     return model, scaler
 
