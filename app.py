@@ -184,9 +184,9 @@ with tab1:
                     'axis': {'range': [0, 20], 'tickwidth': 1},
                     'bar': {'color': WINE_COLOR},
                     'steps': [
-                        {'range': [0, 7.0], 'color': "ACCENT_AMBER"},
-                        {'range': [7.0, 7.5], 'color': "GOOD_GREEN"},
-                        {'range': [7.5, 20], 'color': "BAD_RED"}
+                        {'range': [0, 7.0], 'color': "YELLOW"},
+                        {'range': [7.0, 7.5], 'color': "GREEN"},
+                        {'range': [7.5, 20], 'color': "RED"}
                     ],
                     'threshold': {
                         'line': {'color': GOOD_GREEN, 'width': 4},
