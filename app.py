@@ -88,8 +88,8 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-header">🍷 White Wine Quality Portfolio App</div>', unsafe_allowed_html=True)
-st.markdown('<div class="sub-header">An interactive predictive dashboard transforming chemical profiling into instant quality classification.</div>', unsafe_allowed_html=True)
+st.markdown('<div class="main-header">🍷 White Wine Quality Portfolio App</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">An interactive predictive dashboard transforming chemical profiling into instant quality classification.</div>', unsafe_allow_html=True)
 
 # --- 4. NAVIGATION TABS ---
 tab1, tab2 = st.tabs(["🔮 Predictive Engine", "📊 Deep Data Insights & Analytics"])
