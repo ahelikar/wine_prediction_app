@@ -157,7 +157,7 @@ with tab1:
                 score = prediction_proba[1] * 100
                 st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
                 
-                if score >= 60.0:
+                if score >= 6.0:
                     st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷 GOOD QUALITY</span>", unsafe_allow_html=True)
                 else:
                     st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🤢 BAD QUALITY</span>", unsafe_allow_html=True)
@@ -177,7 +177,7 @@ with tab1:
                 value = current_val,
                 title = {'text': "Good Wine Likelihood Score (%)", 'font': {'color': WINE_COLOR, 'size': 16}},
                 gauge = {
-                    'axis': {'range': [0, 100], 'tickwidth': 1},
+                    'axis': {'range': [0, 10], 'tickwidth': 1},
                     'bar': {'color': WINE_COLOR},
                     'steps': [
                         {'range': [0, 5], 'color': "#FDEDEC"},
