@@ -182,7 +182,7 @@ with tab1:
                     'steps': [
                         {'range': [0, 7], 'color': "#FFE600"},
                         {'range': [7, 7.2], 'color': "#00FF66"},
-                        {'range': [7.2, 10], 'color': "#EC7063"}
+                        {'range': [7.2, 10], 'color': "#FF0033"}
                     ],
                     'threshold': {
                         'line': {'color': GOOD_GREEN, 'width': 4},
