@@ -187,7 +187,7 @@ with tab1:
                     'threshold': {
                         'line': {'color': GOOD_GREEN, 'width': 4},
                         'thickness': 0.75,
-                        'value': 6
+                        'value': 7
                     }
                 }
             ))
