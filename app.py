@@ -180,14 +180,14 @@ with tab1:
                     'axis': {'range': [0, 100], 'tickwidth': 1},
                     'bar': {'color': WINE_COLOR},
                     'steps': [
-                        {'range': [0, 50], 'color': "#FDEDEC"},
-                        {'range': [50, 75], 'color': "#FEF9E7"},
-                        {'range': [75, 100], 'color': "#EAF2F8"}
+                        {'range': [0, 5], 'color': "#FDEDEC"},
+                        {'range': [5, 7], 'color': "#FEF9E7"},
+                        {'range': [7, 10], 'color': "#EAF2F8"}
                     ],
                     'threshold': {
                         'line': {'color': GOOD_GREEN, 'width': 4},
                         'thickness': 0.75,
-                        'value': 60
+                        'value': 6
                     }
                 }
             ))
