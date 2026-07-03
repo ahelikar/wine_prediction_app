@@ -171,9 +171,9 @@ with tab1:
         with res_col2:
             # Gauge Visualization showing exactly where this configuration rests
             if raw_prediction<=10.0:
-            gauge_max=10.0
-            gauge_step=[
-                {'range': [0, 7], 'color': "#FFE600"},
+                gauge_max=10.0
+                gauge_step=[
+                        {'range': [0, 7], 'color': "#FFE600"},
                         {'range': [7, 7.2], 'color': "#00FF66"},
                         {'range': [7.2, 10], 'color': "#FF0033"}
                     ]
