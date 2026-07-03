@@ -186,7 +186,7 @@ with tab1:
                 {'range': [7.2, 10], 'color': "#FF0033"}
                     ],
                 show_ticks= ""
-        fig_gauge = go.Figure(go.Indicator(
+                    fig_gauge = go.Figure(go.Indicator(
                     mode = "gauge+number",
                     value = float(raw_prediction), # Send the true high score to the needle
                     title = {'text': "Wine Quality Metric Scale", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
