@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 
 # --- 1. CONFIG & SYSTEM SETTINGS ---
 st.set_page_config(
-    page_title="Red Wine Quality Analytics", 
+    page_title="White Wine Quality Analytics", 
     page_icon="🍷", 
     layout="wide",
     initial_sidebar_state="expanded"
@@ -18,13 +18,13 @@ WINE_COLOR = "#581845"      # Deep Burgundy / Wine
 ACCENT_AMBER = "#FFC300"    # Warm Amber (for high values / warnings)
 GOOD_GREEN = "#2ECC71"      # Mint Green for high quality
 BAD_RED = "#E74C3C"         # Muted Red for low quality
-BG_LIGHT = "#1A1115"      
+BG_LIGHT = "#F9F9FB"        # Clean off-white background
 
 # --- 2. LOAD PRE-TRAINED MODELS & REFERENCE DATA ---
 @st.cache_resource
 def load_ml_components():
     # Replace these filenames with your exact exported assets
-    model = joblib.load('wine_quality.pkl')
+    model = joblib.load('wine_classifier.pkl')
     scaler = joblib.load('scaler.pkl')
     return model, scaler
 
@@ -79,17 +79,17 @@ st.markdown(f"""
             margin-bottom: 2rem;
         }}
         .metric-card {{
-            background-color:white;
+            background-color: white;
             padding: 1.5rem;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             border-left: 5px solid {WINE_COLOR};
         }}
     </style>
-""", unsafe_allow_html=True)
+""", unsafe_allowed_html=True)
 
-st.markdown('<div class="main-header">🍷Fine Wine</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">An interactive predictive dashboard transforming chemical profiling into instant quality classification.</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🍷 White Wine Quality Portfolio App</div>', unsafe_allowed_html=True)
+st.markdown('<div class="sub-header">An interactive predictive dashboard transforming chemical profiling into instant quality classification.</div>', unsafe_allowed_html=True)
 
 # --- 4. NAVIGATION TABS ---
 tab1, tab2 = st.tabs(["🔮 Predictive Engine", "📊 Deep Data Insights & Analytics"])
@@ -145,58 +145,56 @@ with tab1:
         
         # Pull model output
         prediction = model.predict(scaled_features)[0]
-        raw_prediction = float(prediction)
-        if hasattr(model, "predict_proba"):
-            prediction_proba = model.predict_proba(scaled_features)[0]
-            # Assuming your encoder mapped 1 -> Good, 0 -> Bad
-            probability = prediction_proba[1]
-            percentage_score = probability * 100
-            score = probability * 10
-            current_val = score
-            st.metric(label="Model Quality Probability", value=f"{percentage_score:.1f}%")
-
-            if 7.0 <= score <= 7.5:
-                st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷😉 GOOD CHOICE</span>", unsafe_allow_html=True)
+        
+        # Display nicely styled visual results block
+        res_col1, res_col2 = st.columns([1, 2])
+        
+        with res_col1:
+            st.markdown('<div class="metric-card">', unsafe_allowed_html=True)
+            if hasattr(model, "predict_proba"):
+                prediction_proba = model.predict_proba(scaled_features)[0]
+                # Assuming your encoder mapped 1 -> Good, 0 -> Bad
+                score = prediction_proba[1] * 100
+                st.metric(label="Model Quality Probability", value=f"{score:.1f}%")
+                
+                if score >= 60.0:
+                    st.markdown(f"### Status: <span style='color:{GOOD_GREEN}; font-weight:bold;'>🍷 GOOD QUALITY</span>", unsafe_allowed_html=True)
+                else:
+                    st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🤢 BAD QUALITY</span>", unsafe_allowed_html=True)
             else:
-                st.markdown(f"### Status: <span style='color:{BAD_RED}; font-weight:bold;'>🥸YOU ARE AGING MAN</span>", unsafe_allow_html=True)
-        else:
-            # Fallback directly to binary discrete classifications if probabilities aren't supported
-            label = "🍷 GOOD QUALITY" if prediction == 1 else "🤢 BAD QUALITY"
-            color = GOOD_GREEN if prediction == 1 else BAD_RED
-            current_val = 10.0 if prediction == 1 else 0.0
-            st.markdown(f"### Assessment: <span style='color:{color}; font-weight:bold;'>{label}</span>", unsafe_allow_html=True)
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        res_col1, res_col2 = st.columns(2)
+                # Fallback directly to binary discrete classifications if probabilities aren't supported
+                label = "🍷 GOOD QUALITY" if prediction == 1 else "🤢 BAD QUALITY"
+                color = GOOD_GREEN if prediction == 1 else  BAD_RED
+                st.markdown(f"### Assessment: <span style='color:{color}; font-weight:bold;'>{label}</span>", unsafe_allowed_html=True)
+            st.markdown('</div>', unsafe_allowed_html=True)
+            
         with res_col2:
-            try:
-                fig_gauge = go.Figure(go.Indicator(
-                    mode = "gauge+number",
-                    value = current_val,
-                    title = {'text': "Good Wine Likelihood Score (%)", 'font': {'color': "#581845", 'size': 16, 'bold': True}},
-                    gauge = {
-                        'axis': {'range': [0, 10], 'tickwidth': 2, 'tickcolor': "#333333"},
-                        'bar': {'color': "#111111"}, # Solid dark needle for sharp contrast
-                        'bgcolor': "#FFFFFF",        # Pure white background to make bright colors pop
-                        'steps': [
-                            {'range': [0, 5.0], 'color': "#9C8818"},
-                            {'range': [7.0, 7.2], 'color': "#00FF66"},
-                            {'range': [7.2, 10], 'color': "#D72044"}
-                        ],
-                        'threshold': {
-                            'line': {'color': "#000000", 'width': 3}, # Dark line to sharply frame the threshold boundary
-                            'thickness': 0.8,
-                            'value': 7.0
-                        }
+            # Gauge Visualization showing exactly where this configuration rests
+            current_val = prediction_proba[1] * 100 if hasattr(model, "predict_proba") else (100 if prediction == 1 else 20)
+            
+            fig_gauge = go.Figure(go.Indicator(
+                mode = "gauge+number",
+                value = current_val,
+                title = {'text': "Good Wine Likelihood Score (%)", 'font': {'color': WINE_COLOR, 'size': 16}},
+                gauge = {
+                    'axis': {'range': [0, 100], 'tickwidth': 1},
+                    'bar': {'color': WINE_COLOR},
+                    'steps': [
+                        {'range': [0, 50], 'color': "#FDEDEC"},
+                        {'range': [50, 75], 'color': "#FEF9E7"},
+                        {'range': [75, 100], 'color': "#EAF2F8"}
+                    ],
+                    'threshold': {
+                        'line': {'color': GOOD_GREEN, 'width': 4},
+                        'thickness': 0.75,
+                        'value': 60
                     }
-                ))
-                # Increase chart height slightly to give the bright colors more visual weight
-                fig_gauge.update_layout(margin=dict(t=30, b=10, l=10, r=10), height=250)
-                st.plotly_chart(fig_gauge, use_container_width=True)
-            except Exception as plotly_err:
-                # Safe layout fallback card if anything unexpected happens
-                st.warning("Visual layout is updating...")
-                st.info(f"📊 Evaluated Quality Value: **{current_val:.2f}**")
+                }
+            ))
+            fig_gauge.update_layout(margin=dict(t=30, b=10, l=10, r=10), height=220)
+            st.plotly_chart(fig_gauge, use_container_width=True)
+
+# ==========================================
 # TAB 2: DATASET INSIGHTS & ANALYTICS
 # ==========================================
 with tab2:
@@ -257,7 +255,7 @@ with tab2:
         st.plotly_chart(fig_scatter, use_container_width=True)
 
     # Dynamic Insight Matrix at the bottom
-    st.markdown("### 🧪 Key Chemical Insights")
+    st.markdown("### 🧪 Key Chemical Insights for Technical Recruiters")
     st.info("""
     - **Volatile Acidity:** Higher distributions typically correlate directly with poor sensory qualities (acetic acid taste profiles).
     - **Sulphates & Preservatives:** Actively bound indicators directly prevent wine oxidation, providing strong predictive patterns within the Random Forest split paths.
