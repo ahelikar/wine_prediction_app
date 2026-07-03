@@ -28,8 +28,8 @@ BG_LIGHT = "#3A081F"
 @st.cache_resource
 def load_ml_components():
     # Replace these filenames with your exact exported assets
-    model = joblib.load('wine_quality.pkl')
-    scaler = joblib.load('scaler.pkl')
+    model = joblib.load('wine_quality (1).pkl')
+    scaler = joblib.load('scaler (1).pkl')
     return model, scaler
 
 @st.cache_data
